@@ -5,12 +5,12 @@ public class minesweeper {
     private int width;
     private int bomb_proc;
     private int bomb_val = -1;
-    private int bomb_num;
-    /*private int blankBoard[][] = {
 
-    }*/
-    private int[][] newBoard = new int[height][width];
-    private int[][] resultBoard = new int[height][width];
+    private int bomb_num;
+
+    private int[][] newBoard;
+    private String [][] blankBoard;
+    private int[][] resultBoard;
     private int[][] directions = {
             {-1, -1}, {-1, 0}, {-1, 1},
             {0, -1},         {0, 1},
@@ -31,16 +31,16 @@ public class minesweeper {
         int[][] board;
         board = populateMatrix(width, height, bomb_num);
 
+        blankBoard = generateMatrix(height, width, "■");
 
 
 
 
-
-
+resultBoard  = new int[height][width];
         for (int r = 0; r < height; r++) {
             for (int c = 0; c < width; c++) {
                 if (board[r][c] == -1) {
-                    resultBoard[r][c] = -1; // Keep bombs as they are
+                    resultBoard[r][c] = -1;
                 } else {
                     int bombCount = 0;
                     // Check neighbours
@@ -52,9 +52,13 @@ public class minesweeper {
                         if (newRow >= 0 && newRow < height && newCol >= 0 && newCol < width) {
                             if (board[newRow][newCol] == -1) {
                                 bombCount++;
+
                             }
+                            //System.out.println("r: " + r + ", c: " + c + ", newRow: " + newRow + ", newCol: " + newCol);
                         }
+
                     }
+
                     resultBoard[r][c] = bombCount;
                 }
             }
@@ -62,16 +66,18 @@ public class minesweeper {
        printBoard(resultBoard);
         //printBoard();
     }
-    public void checkTile(int row, int col, int[][] board, boolean show) {
+    private void checkTile(int row, int col, int[][] board, boolean show) {
 
 
         if (board[row][col] == -1 && show) {
+            blankBoard[row][col] = "-1";
             System.out.println("GAME OVER");
+            return;
         } else if(board[row][col] > 0 && show) {
-            newBoard[row][col] = board[row][col];
+            blankBoard[row][col] = String.valueOf(board[row][col]);
         }else {
 
-            HashMap<Integer, Integer> neighbours = new HashMap<Integer, Integer>();
+            //HashMap<Integer, Integer> neighbours = new HashMap<Integer, Integer>();
 
         for (int[] dir : directions) {
             int newRow = row + dir[0];
@@ -80,7 +86,7 @@ public class minesweeper {
 
             if (newRow >= 0 && newRow < height && newCol >= 0 && newCol < width) {
                 if (board[newRow][newCol] == 0) {
-                    newBoard[newRow][newCol] = 0;
+                    blankBoard[newRow][newCol] = "0";
                     checkTile(newRow, newCol, board, false);
                 }
             }
@@ -91,8 +97,9 @@ public class minesweeper {
 
     }
     public void checkTileUsable(int row, int col){
+
         checkTile(row, col, resultBoard, true);
-        printBoard(newBoard);
+        printBoard(blankBoard);
     }
     public void printBoard(int[][] board) {
         for (int i = 0; i < board.length; i++) {
@@ -103,12 +110,24 @@ public class minesweeper {
             }
         }
     }
-    public String fillToThree(int x){
+    public String fillToThree(String x){
         String value = String.valueOf(x);
-        if(x<0) value = value + " ";
+        String[] flags = {"1","2","3","4","5","6","7","8"};
+        //if(flags.) value = value + " ";
         else value = " " + value + " ";
         return value;
 
+    }
+    public static String[][] generateMatrix(int rows, int cols, String symbol) {
+        String[][] matrix = new String[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix[i][j] = symbol;
+            }
+        }
+
+        return matrix;
     }
     public int[][] populateMatrix(int m, int n, int x) {
         int[][] matrix = new int[m][n];

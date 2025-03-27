@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         minesweeper game = new minesweeper(10,10,20);
-        game.checkTileUsable(5, 5);
+        //game.checkTileUsable(3, 2);
     }
 
 
